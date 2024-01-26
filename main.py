@@ -6,8 +6,8 @@ import os
 from keep_alive import keep_alive
 
 # Créez une instance de client avec votre propre token de bot et votre nom d'utilisateur
-app = Client("my_account", bot_token="6813590394:AAFtdbMTylWbr-yFdhqwV1CP2bmTIYoMGUk", api_id="29022005", api_hash="bfd616932410d155a39403b4fac5884b")
-
+app = Client("my_account", bot_token="6813590394:AAFtdbMTylWbr-yFdhqwV1CP2bmTIYoMGUk", api_id="21648908", api_hash="a6f834b1a8f86046078f05bfe34c0a5f")
+Admin_id = 6217351762
 
 # Créez un sémaphore avec une limite de 1
 semaphore = asyncio.Semaphore(5)
@@ -46,6 +46,12 @@ async def start(client: Client, message: Message):
 async def add_text_to_replace(client: Client, message: Message):
     global text_to_replace
 
+    # Vérifie si l'utilisateur est l'admin autorisé
+    if message.from_user.id != Admin_id:
+        await message.reply_text("Vous n'êtes pas autorisé à exécuter cette commande.")
+        return
+
+
     if len(message.command) > 1:
         new_text = message.command[1]
 
@@ -64,8 +70,13 @@ async def add_text_to_replace(client: Client, message: Message):
 async def list_text(client: Client, message: Message):
     global text_to_replace
 
+    # Vérifie si l'utilisateur est l'admin autorisé
+    if message.from_user.id != Admin_id:
+        await message.reply_text("Vous n'êtes pas autorisé à exécuter cette commande.")
+        return
+
     if text_to_replace:
-        all_texts = '\n'.join([f'- {text}' for text in text_to_replace])  # Formatage de la liste
+        all_texts = '\n'.join([f'- `{text}`' for text in text_to_replace])  # Formatage de la liste
         await message.reply_text(f'Liste actuelle :\n{all_texts}')
     else:
         await message.reply_text('La liste est actuellement vide.')
@@ -74,6 +85,11 @@ async def list_text(client: Client, message: Message):
 @app.on_message(filters.command("remove_text"))
 async def remove_text(client: Client, message: Message):
     global text_to_replace
+
+    # Vérifie si l'utilisateur est l'admin autorisé
+    if message.from_user.id != Admin_id:
+        await message.reply_text("Vous n'êtes pas autorisé à exécuter cette commande.")
+        return
 
     if len(message.command) > 1:
         text_to_remove = message.command[1]
@@ -93,12 +109,20 @@ async def remove_text(client: Client, message: Message):
 @app.on_message(filters.command("start_processing"))
 async def start_processing(client: Client, message: Message):
     global processing_enabled
+    # Vérifie si l'utilisateur est l'admin autorisé
+    if message.from_user.id != Admin_id:
+        await message.reply_text("Vous n'êtes pas autorisé à exécuter cette commande.")
+        return
     processing_enabled = True
     await message.reply_text('Le traitement des fichiers a été démarré.')
 
 # Commande /stop_processing pour arrêter le traitement des fichiers
 @app.on_message(filters.command("stop_processing"))
 async def stop_processing(client: Client, message: Message):
+    # Vérifie si l'utilisateur est l'admin autorisé
+    if message.from_user.id != Admin_id:
+        await message.reply_text("Vous n'êtes pas autorisé à exécuter cette commande.")
+        return
     global processing_enabled
     processing_enabled = False
     await message.reply_text('Le traitement des fichiers a été arrêté.')
@@ -107,6 +131,11 @@ async def stop_processing(client: Client, message: Message):
 @app.on_message(filters.command(['activer', 'desactiver']))
 async def handle_thumbnail_command(client: Client, message: Message):
     global change_thumbnail
+
+    # Vérifie si l'utilisateur est l'admin autorisé
+    if message.from_user.id != Admin_id:
+        await message.reply_text("Vous n'êtes pas autorisé à exécuter cette commande.")
+        return
 
     if message.command[0] == 'activer':
         change_thumbnail = True
@@ -120,6 +149,11 @@ async def handle_thumbnail_command(client: Client, message: Message):
 async def rename_media(client: Client, message: Message):
     global processing_enabled, thumbnail_image, text_to_replace
 
+    # Vérifie si l'utilisateur est l'admin autorisé
+    if message.from_user.id != Admin_id:
+        await message.reply_text(f"**Vous n'êtes pas autorisé à utiliser cet Bot .**")
+        return
+        
     if not processing_enabled:
         await message.reply_text('Le traitement des fichiers est actuellement désactivé.')
         return
@@ -128,8 +162,6 @@ async def rename_media(client: Client, message: Message):
     async with semaphore:
         # Vérifiez si la taille du fichier est inférieure à 2 Go (2 * 1024 * 1024 * 1024 octets)
         if message.document.file_size <= 2 * 1024 * 1024 * 1024 :
-            # Envoyez un message à l'utilisateur pour lui faire savoir que le fichier a été reçu
-            # await message.reply_text("Fichier reçu, patientez un instant...")
 
             # Vérifiez si le nom du fichier contient la partie à remplacer
             if any(text in message.document.file_name for text in text_to_replace):
