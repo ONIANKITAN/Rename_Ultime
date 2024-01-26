@@ -129,7 +129,7 @@ async def rename_media(client: Client, message: Message):
         # Vérifiez si la taille du fichier est inférieure à 2 Go (2 * 1024 * 1024 * 1024 octets)
         if message.document.file_size <= 2 * 1024 * 1024 * 1024 :
             # Envoyez un message à l'utilisateur pour lui faire savoir que le fichier a été reçu
-            await message.reply_text("Fichier reçu, patientez un instant...")
+            # await message.reply_text("Fichier reçu, patientez un instant...")
 
             # Vérifiez si le nom du fichier contient la partie à remplacer
             if any(text in message.document.file_name for text in text_to_replace):
