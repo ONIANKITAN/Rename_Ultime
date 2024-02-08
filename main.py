@@ -197,7 +197,7 @@ async def rename_media(client: Client, message: Message):
 
                 
                 text_caracter = [".", "_", "-"]
-                for text in text_caracter
+                for text in text_caracter :
                     filename_without_last_4_chars = filename_without_last_4_chars.replace(text, " ")
                 
                 caption = f"`{filename_without_last_4_chars}` **| @TurboSearch**"
