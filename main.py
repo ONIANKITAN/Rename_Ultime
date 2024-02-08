@@ -6,7 +6,7 @@ import os
 from keep_alive import keep_alive
 
 # Créez une instance de client avec votre propre token de bot et votre nom d'utilisateur
-app = Client("my_account", bot_token="6813590394:AAFtdbMTylWbr-yFdhqwV1CP2bmTIYoMGUk", api_id="21648908", api_hash="a6f834b1a8f86046078f05bfe34c0a5f")
+app = Client("my_account", bot_token="6813590394:AAHsPhmYZIJNATpqVtK9LyNB8RO9W6eyOvE", api_id="21648908", api_hash="a6f834b1a8f86046078f05bfe34c0a5f")
 Admin_id = 6217351762
 
 # Créez un sémaphore avec une limite de 1
